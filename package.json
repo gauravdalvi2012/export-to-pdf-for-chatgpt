@@ -1,0 +1,13 @@
+{
+  "name": "chatgpt-pdf-extension",
+  "version": "1.2.5",
+  "description": "Chrome Manifest V3 extension to export ChatGPT conversations as PDFs.",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --format=iife --outfile=export.js",
+    "watch": "esbuild src/index.js --bundle --format=iife --outfile=export.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
