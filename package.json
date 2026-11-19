@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/index.js --bundle --format=iife --outfile=export.js",
-    "watch": "esbuild src/index.js --bundle --format=iife --outfile=export.js --watch"
+    "watch": "esbuild src/index.js --bundle --format=iife --outfile=export.js --watch",
+    "dist": "node scripts/package.js",
+    "package": "node scripts/package.js"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"
