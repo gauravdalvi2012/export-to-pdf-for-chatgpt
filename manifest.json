@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT Chat to PDF",
-  "version": "1.2.5",
+  "version": "1.0.0",
   "description": "Export ChatGPT conversations as PDFs with adaptive conversation scanning, visual snapshots and compact attachment pills.",
   "permissions": [
     "activeTab",

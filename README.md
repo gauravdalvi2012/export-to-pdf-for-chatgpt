@@ -1,8 +1,8 @@
-# ChatGPT Chat to PDF — v1.2.5
+# ChatGPT Chat to PDF — v1.0.0
 
 A local Chrome Manifest V3 extension to export the open ChatGPT conversation through Chrome's **Save as PDF** print dialog.
 
-## What's new in v1.2.5
+## Features
 
 - **Code block correctness:** Extract rendered line boundaries from syntax-highlighted code before cloning it. Bash, JSON and multiline code retain real newlines and indentation, even when the original HTML uses individual line wrappers.
 - **Citation cleanup:** Remove compact source icon-and-text popover pills (such as `OBS` or `GitHub` citations) as well as explicitly marked citations. Do not click or resolve sources; normal hyperlinks and ordinary text remain intact.

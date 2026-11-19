@@ -1,4 +1,4 @@
-/* ChatGPT Chat to PDF v1.2.5 — preserve code lines and remove source citations. */
+/* ChatGPT Chat to PDF v1.0.0 — preserve code lines and remove source citations. */
 import { defaults } from './config.js';
 import { createProgressIndicator } from './ui/progress.js';
 import { createSnapshotManager } from './capture/snapshot.js';
