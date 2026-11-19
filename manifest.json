@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Chat to PDF",
+  "name": "Export to PDF for ChatGPT",
   "version": "1.0.0",
-  "description": "Export ChatGPT conversations as PDFs with adaptive conversation scanning, visual snapshots and compact attachment pills.",
+  "description": "Export ChatGPT conversations as clean, formatted PDFs with code block integrity, visual snapshots and compact attachment pills.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -12,7 +12,7 @@
     "https://chatgpt.com/*"
   ],
   "action": {
-    "default_title": "Export current ChatGPT chat to PDF"
+    "default_title": "Export current ChatGPT conversation to PDF"
   },
   "background": {
     "service_worker": "background.js"

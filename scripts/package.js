@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process';
 
 const ROOT_DIR = process.cwd();
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
-const ZIP_NAME = 'chatgpt-pdf-extension.zip';
+const ZIP_NAME = 'export-to-pdf-for-chatgpt.zip';
 
 console.log('📦 Step 1: Compiling export.js with esbuild...');
 execSync('npm run build', { stdio: 'inherit' });

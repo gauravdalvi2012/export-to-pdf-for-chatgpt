@@ -1,4 +1,4 @@
-# ChatGPT Chat to PDF — v1.0.0
+# Export to PDF for ChatGPT — v1.0.0
 
 A local Chrome Manifest V3 extension to export the open ChatGPT conversation through Chrome's **Save as PDF** print dialog.
 
