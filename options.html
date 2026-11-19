@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChatGPT Chat to PDF — Export settings</title>
+  <link rel="stylesheet" href="options.css">
+  <script src="options.js" defer></script>
+</head>
+<body>
+  <main class="layout">
+    <header class="topbar">
+      <div class="brandmark" aria-hidden="true">PDF</div>
+      <div>
+        <div class="eyebrow">ChatGPT Chat to PDF · v1.2.5</div>
+        <h1>Export settings</h1>
+        <p>These settings are saved. Click the extension icon on any conversation to export.</p>
+      </div>
+    </header>
+
+    <div class="columns">
+      <form id="settings-form" class="panel" autocomplete="off">
+        <fieldset>
+          <legend>PDF appearance</legend>
+          <div class="radio-cards" role="radiogroup" aria-label="PDF theme">
+            <label class="theme-option">
+              <input type="radio" name="theme" value="light" checked>
+              <span class="theme-swatch light-swatch" aria-hidden="true"><i></i><b></b><b></b></span>
+              <span class="theme-caption">Light<small>White · recommended</small></span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="theme" value="dark">
+              <span class="theme-swatch dark-swatch" aria-hidden="true"><i></i><b></b><b></b></span>
+              <span class="theme-caption">Dark<small>Soft charcoal background</small></span>
+            </label>
+            <label class="theme-option">
+              <input type="radio" name="theme" value="black">
+              <span class="theme-swatch black-swatch" aria-hidden="true"><i></i><b></b><b></b></span>
+              <span class="theme-caption">Black<small>Pure #000000 background</small></span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Page size</legend>
+          <div class="segmented">
+            <label><input type="radio" name="paper" value="A4" checked><span>A4</span></label>
+            <label><input type="radio" name="paper" value="Letter"><span>US Letter</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Document details</legend>
+          <label class="toggle"><input type="checkbox" name="pageNumbers" checked><span><strong>Page numbers</strong><small>Page 1 of N in the footer</small></span></label>
+          <label class="toggle"><input type="checkbox" name="titleAndDate" checked><span><strong>Title and export date</strong><small>Conversation title, date, and source link</small></span></label>
+          <label class="toggle"><input type="checkbox" name="userBubbles" checked><span><strong>Shaded user messages</strong><small>Distinguish your prompts from ChatGPT replies</small></span></label>
+          <label class="toggle"><input type="checkbox" name="includeProgress"><span><strong>Include progress updates</strong><small>Keep intermediate status messages when a later assistant response follows</small></span></label>
+        </fieldset>
+
+        <div class="actions">
+          <span id="save-status" role="status" aria-live="polite">Settings are saved automatically</span>
+          <button id="reset" type="button">Reset defaults</button>
+        </div>
+      </form>
+
+      <aside class="preview-panel">
+        <div class="preview-top"><h2>PDF preview</h2><span>Illustration</span></div>
+        <div id="preview-paper" class="preview-paper" data-theme="light">
+          <div class="sample-title">Example conversation</div>
+          <div class="sample-meta">Exported Nov 19, 2026 · Original chat</div>
+          <div class="sample-rule"></div>
+          <div class="sample-role">YOU</div>
+          <div class="sample-user">What is the difference between DNS and a domain registrar?</div>
+          <div class="sample-role">CHATGPT</div>
+          <p>A <strong>registrar</strong> manages domain ownership. A <strong>DNS provider</strong> controls the records that point to your server.</p>
+          <div class="sample-table"><div>Service</div><div>Responsibility</div><div>Registrar</div><div>Domain ownership</div><div>DNS</div><div>Routing records</div></div>
+          <div class="sample-code">example.com → 192.0.2.10</div>
+          <div class="sample-page-number">Page 1 of 1</div>
+        </div>
+        <p class="preview-note">The PDF preserves supported links, tables, diagrams and visual content. User uploads appear as filename pills. Complex widgets are captured as static visuals where supported.</p>
+        <div class="hint"><strong>To export</strong><span>Return to a ChatGPT conversation and click the extension toolbar icon. Chrome's Save as PDF dialog will open.</span></div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
