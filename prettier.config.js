@@ -1,4 +1,9 @@
-/** @type {import('prettier').Config} */
+/**
+ * Prettier configuration
+ * Configured for Prettier v3.10.1
+ *
+ * @type {import('prettier').Config}
+ */
 export default {
   // Always append semicolons for explicit statement termination
   semi: true,
