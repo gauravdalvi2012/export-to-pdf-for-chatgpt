@@ -17,6 +17,18 @@ This extension solves these issues by intelligently scanning the full conversati
 
 ---
 
+## 🖼️ Preview
+
+<div align="center">
+  <img src=".github/assets/preview-print.png" alt="ChatGPT Export to PDF - Chrome Print Preview" width="900" />
+  <p><em>Complete unrolled conversation rendering in Chrome's native print preview dialog with headers, page numbers, and preserved code blocks.</em></p>
+  <br />
+  <img src=".github/assets/preview-options.png" alt="ChatGPT Export to PDF - Settings and Themes" width="900" />
+  <p><em>Customizable print options: Light (paper standard), Dark, and OLED Black themes, paper formats (A4 / US Letter), and display toggles.</em></p>
+</div>
+
+---
+
 ## ✨ Features
 
 - **Full Conversation Scanning:** Automatically scrolls through and captures long, virtualized conversations from the first prompt to the final reply without skipping turns.
@@ -81,11 +93,16 @@ The codebase is written in TypeScript, organized into modular domain modules und
 For an in-depth breakdown of algorithmic models, AST extraction, and security invariants, read [ARCHITECTURE.md](ARCHITECTURE.md). To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```text
+├── .github/
+│   ├── assets/            # High-resolution visual showcase and preview screenshots
+│   ├── badges/            # Live SVG and JSON coverage badge assets
+│   └── workflows/         # GitHub Actions CI automated pipeline
 ├── manifest.json          # Chrome Extension Manifest V3 configuration
 ├── options.html / .css    # Settings page (theme, page size, display options)
 ├── icons/                 # Extension icons (16px, 32px, 48px, 128px)
 ├── prettier.config.js     # Code formatting configuration
 ├── scripts/
+│   ├── generate-badge.js  # Automated SVG and Shields.io coverage badge builder
 │   └── package.js         # Automated distribution and zip packaging script
 ├── src/
 │   ├── index.ts           # Main export orchestrator and lifecycle coordinator

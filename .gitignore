@@ -4,4 +4,4 @@ background.js
 options.js
 dist/
 coverage/
-screenshot-*.png
+/screenshot-*.png
