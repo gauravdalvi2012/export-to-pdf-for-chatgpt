@@ -1,4 +1,4 @@
-/* Export to PDF for ChatGPT v1.0.0 — preserve code lines and remove source citations. */
+/* Export to PDF for ChatGPT — preserve code lines and remove source citations. */
 import { defaults } from './config.js';
 import { createProgressIndicator } from './ui/progress.js';
 import { createSnapshotManager } from './capture/snapshot.js';

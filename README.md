@@ -1,4 +1,4 @@
-# Export to PDF for ChatGPT — v1.0.0
+# Export to PDF for ChatGPT
 
 A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversations into beautifully formatted, readable PDFs through Chrome's native **Save as PDF** print dialog.
 
