@@ -3,6 +3,8 @@
 A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversations into beautifully formatted, readable PDFs through Chrome's native **Save as PDF** print dialog.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Published-brightgreen?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
+[![CI](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml/badge.svg)](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
@@ -73,6 +75,8 @@ The codebase is written in TypeScript, organized into modular domain modules und
 ---
 
 ## 📂 Project Structure
+
+For an in-depth breakdown of algorithmic models, AST extraction, and security invariants, read [ARCHITECTURE.md](ARCHITECTURE.md). To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```text
 ├── manifest.json          # Chrome Extension Manifest V3 configuration
