@@ -62,7 +62,7 @@ The codebase is written in TypeScript, organized into modular domain modules und
 
 | Command                | Description                                                                                                                          |
 | :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run build`        | Compiles `src/index.ts` into the root `export.js` bundle using esbuild.                                                              |
+| `npm run build`        | Compiles `src/` TypeScript entry points into root bundles with esbuild.                                                              |
 | `npm run watch`        | Watches `src/` for file changes and rebuilds automatically.                                                                          |
 | `npm run typecheck`    | Runs strict TypeScript verification across `src/` and `test/` without emitting.                                                      |
 | `npm test`             | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures.                                                    |
@@ -76,14 +76,15 @@ The codebase is written in TypeScript, organized into modular domain modules und
 
 ```text
 ├── manifest.json          # Chrome Extension Manifest V3 configuration
-├── background.js          # Service worker for activeTab widget capture
 ├── options.html / .css    # Settings page (theme, page size, display options)
-├── options.js             # Options storage and live preview logic
 ├── icons/                 # Extension icons (16px, 32px, 48px, 128px)
+├── prettier.config.js     # Code formatting configuration
 ├── scripts/
 │   └── package.js         # Automated distribution and zip packaging script
 ├── src/
 │   ├── index.ts           # Main export orchestrator and lifecycle coordinator
+│   ├── background.ts      # Service worker for activeTab widget capture
+│   ├── options.ts         # Options storage and live preview logic
 │   ├── types.ts           # TypeScript interfaces for settings, turns, and snapshots
 │   ├── config.ts          # Defaults, palettes, tag/attribute sets, regex patterns
 │   ├── utils.ts           # DOM helpers, safe URL validators, CSS helpers
