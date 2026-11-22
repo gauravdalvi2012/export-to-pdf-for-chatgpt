@@ -20,7 +20,7 @@ In accordance with Chrome Web Store Developer Program Policies, the extension re
 
 - **`activeTab`:** Grants temporary, scoped access to the currently active ChatGPT conversation tab only when you click the extension action icon.
 - **`scripting`:** Executes the local client-side extraction script that unrolls virtualized DOM nodes and formats the document for Chrome's native print engine.
-- **`storage`:** Used via `chrome.storage.local` solely to save your local UI formatting options on your machine (such as light/dark print theme, page margin selection, and header timestamp toggle). Preferences never leave your device.
+- **`storage`:** Used via `chrome.storage.sync` solely to save your export formatting preferences (such as print theme, paper size, and page numbering). Preferences are synchronized across your signed-in browser instances via Chrome Sync and never leave Google's secure browser sync infrastructure.
 - **`https://chatgpt.com/*`:** Restricts host execution strictly to official ChatGPT URLs, preventing the extension from ever running on or inspecting any other website.
 
 ---
@@ -29,7 +29,7 @@ In accordance with Chrome Web Store Developer Program Policies, the extension re
 
 The extension does not maintain servers, databases, or cloud infrastructure. All stored preferences reside on your machine in your browser profile:
 
-- **Local Scope:** Formatting preferences are stored strictly in `chrome.storage.local` without cloud synchronization across devices.
+- **Profile & Sync Scope:** Formatting preferences are stored via `chrome.storage.sync` so your display preferences persist across your signed-in browser sessions without any external servers or third-party databases.
 - **Instant Deletion:** You can purge all saved preferences at any time by clearing extension data via `chrome://extensions` or by uninstalling the extension.
 
 ---
