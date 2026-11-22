@@ -30,7 +30,8 @@ describe('Code block newline and indentation preservation', () => {
   it('preserves indentation and newlines in multi-line code with indentation', () => {
     const pre = document.createElement('pre');
     const code = document.createElement('code');
-    const pythonCode = 'def calculate_sum(items):\n    total = 0\n    for item in items:\n        total += item\n    return total';
+    const pythonCode =
+      'def calculate_sum(items):\n    total = 0\n    for item in items:\n        total += item\n    return total';
     code.textContent = pythonCode;
     pre.appendChild(code);
 

@@ -10,13 +10,23 @@ describe('Attachment badge extraction', () => {
   describe('extractNames', () => {
     it('extracts single and multi-line file names', () => {
       expect(extractNames('my_report.pdf')).toEqual(['my_report.pdf']);
-      expect(extractNames('DOWNLOAD FILE quarterly_analysis.xlsx')).toEqual(['quarterly_analysis.xlsx']);
-      expect(extractNames('PDF\nproject_spec_v2.pdf')).toEqual(['project_spec_v2.pdf']);
-      expect(extractNames('backup.zip\nimage.png\nnotes.txt')).toEqual(['backup.zip', 'image.png', 'notes.txt']);
+      expect(extractNames('DOWNLOAD FILE quarterly_analysis.xlsx')).toEqual([
+        'quarterly_analysis.xlsx'
+      ]);
+      expect(extractNames('PDF\nproject_spec_v2.pdf')).toEqual([
+        'project_spec_v2.pdf'
+      ]);
+      expect(extractNames('backup.zip\nimage.png\nnotes.txt')).toEqual([
+        'backup.zip',
+        'image.png',
+        'notes.txt'
+      ]);
     });
 
     it('ignores non-filename text and overly long strings', () => {
-      expect(extractNames('Just some normal text without file extensions')).toEqual([]);
+      expect(
+        extractNames('Just some normal text without file extensions')
+      ).toEqual([]);
       expect(extractNames('a'.repeat(300) + '.pdf')).toEqual([]);
     });
   });
@@ -63,7 +73,14 @@ describe('Attachment badge extraction', () => {
       turn.appendChild(user);
 
       const userAttachmentNodes = new Set<Element>();
-      const result = extractAttachments(document, turn, user, user, [], userAttachmentNodes);
+      const result = extractAttachments(
+        document,
+        turn,
+        user,
+        user,
+        [],
+        userAttachmentNodes
+      );
 
       expect(result.className).toBe('message-attachments');
       const pills = result.querySelectorAll('.attachment-pill');
@@ -83,13 +100,21 @@ describe('Attachment badge extraction', () => {
       p.className = 'markdown';
       const link = document.createElement('a');
       link.href = 'https://example.com/whitepaper.pdf';
-      link.textContent = 'Read the whitepaper at https://example.com/whitepaper.pdf';
+      link.textContent =
+        'Read the whitepaper at https://example.com/whitepaper.pdf';
       p.appendChild(link);
       user.appendChild(p);
       turn.appendChild(user);
 
       const userAttachmentNodes = new Set<Element>();
-      const result = extractAttachments(document, turn, user, user, [], userAttachmentNodes);
+      const result = extractAttachments(
+        document,
+        turn,
+        user,
+        user,
+        [],
+        userAttachmentNodes
+      );
 
       expect(result.querySelectorAll('.attachment-pill').length).toBe(0);
       expect(userAttachmentNodes.size).toBe(0);
@@ -112,7 +137,14 @@ describe('Attachment badge extraction', () => {
       turn.appendChild(user);
 
       const userAttachmentNodes = new Set<Element>();
-      const result = extractAttachments(document, turn, user, user, [], userAttachmentNodes);
+      const result = extractAttachments(
+        document,
+        turn,
+        user,
+        user,
+        [],
+        userAttachmentNodes
+      );
 
       const pills = result.querySelectorAll('.attachment-pill');
       expect(pills.length).toBe(1);
@@ -131,7 +163,14 @@ describe('Attachment badge extraction', () => {
       turn.appendChild(user);
 
       const userAttachmentNodes = new Set<Element>();
-      const result = extractAttachments(document, turn, user, user, [], userAttachmentNodes);
+      const result = extractAttachments(
+        document,
+        turn,
+        user,
+        user,
+        [],
+        userAttachmentNodes
+      );
 
       const pills = result.querySelectorAll('.attachment-pill');
       expect(pills.length).toBe(1);

@@ -22,8 +22,5 @@
     "noEmit": true,
     "types": ["chrome", "vitest/globals"]
   },
-  "include": [
-    "src/**/*",
-    "test/**/*"
-  ]
+  "include": ["src/**/*", "test/**/*"]
 }

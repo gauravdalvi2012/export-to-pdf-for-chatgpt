@@ -26,7 +26,9 @@ describe('DOM cleaner sanitization and transformation', () => {
     expect(cleaned.querySelector('script')).toBeNull();
     expect(cleaned.querySelector('style')).toBeNull();
     expect(cleaned.querySelector('.turn-action-controls')).toBeNull();
-    expect(cleaned.querySelector('p')?.textContent).toBe('Valid paragraph text');
+    expect(cleaned.querySelector('p')?.textContent).toBe(
+      'Valid paragraph text'
+    );
   });
 
   it('sanitizes unsafe javascript: links while preserving safe https links', () => {
@@ -50,7 +52,9 @@ describe('DOM cleaner sanitization and transformation', () => {
     const cleaned = cleaner(container, false, 'assistant') as HTMLElement;
     const safeLinks = cleaned.querySelectorAll('a[href]');
     expect(safeLinks.length).toBe(1);
-    expect(safeLinks[0].getAttribute('href')).toBe('https://chatgpt.com/overview');
+    expect(safeLinks[0].getAttribute('href')).toBe(
+      'https://chatgpt.com/overview'
+    );
 
     const unsafeLinkCleaned = cleaned.querySelectorAll('a')[1];
     expect(unsafeLinkCleaned.hasAttribute('href')).toBe(false);
@@ -62,7 +66,10 @@ describe('DOM cleaner sanitization and transformation', () => {
     widget.setAttribute('aria-label', 'Monthly Revenue Chart');
 
     const snapshotCache = new Map<Element, string>();
-    snapshotCache.set(widget, 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==');
+    snapshotCache.set(
+      widget,
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+    );
 
     const cleaner = createDomCleaner({
       doc,

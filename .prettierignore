@@ -1,0 +1,6 @@
+node_modules/
+dist/
+export.js
+package-lock.json
+*.png
+*.zip

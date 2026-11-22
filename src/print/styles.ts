@@ -8,15 +8,23 @@ export interface PrintStylesOptions {
   opts: ExportSettings;
 }
 
-export function generatePrintStyles({ title, exportDate, opts }: PrintStylesOptions): string {
+export function generatePrintStyles({
+  title,
+  exportDate,
+  opts
+}: PrintStylesOptions): string {
   const pal = palette[opts.theme];
-  const pageHeader = opts.titleAndDate ? `
+  const pageHeader = opts.titleAndDate
+    ? `
     @top-left { content: ${quotedCSS(title)}; font: 8pt Arial, sans-serif; color: ${pal.muted}; }
     @top-right { content: ${quotedCSS(exportDate)}; font: 8pt Arial, sans-serif; color: ${pal.muted}; }
-  ` : '';
-  const pageFooter = opts.pageNumbers ? `
+  `
+    : '';
+  const pageFooter = opts.pageNumbers
+    ? `
     @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt Arial, sans-serif; color: ${pal.muted}; }
-  ` : '';
+  `
+    : '';
 
   return `
     @page {

@@ -21,7 +21,7 @@ This extension solves these issues by intelligently scanning the full conversati
 - **Visual Snapshotting:** Captures rendered assistant diagrams, charts, and custom CSS/canvas widgets as high-resolution static snapshots via Chrome's tab capture API.
 - **Citation Cleanup:** Automatically strips distracting search popovers and footnote pills (e.g. `OBS`, `GitHub` source chips) while keeping genuine hyperlinks intact.
 - **Compact Attachment Pills:** Replaces user-uploaded files and screenshots with neat metadata badges rather than broken image tags or empty spaces.
-- **Customizable Print Themes:** 
+- **Customizable Print Themes:**
   - **Light** (`#FFFFFF`) — standard paper print (recommended).
   - **Dark** (`#1F2329`) — easy on the eyes.
   - **Black** (`#000000`) — high-contrast OLED black.
@@ -60,13 +60,15 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 
 The codebase is written in TypeScript, organized into modular domain modules under `src/`, bundled with `esbuild`, and tested with `vitest`.
 
-| Command | Description |
-| :--- | :--- |
-| `npm run build` | Compiles `src/index.ts` into the root `export.js` bundle using esbuild. |
-| `npm run watch` | Watches `src/` for file changes and rebuilds automatically. |
-| `npm run typecheck` | Runs strict TypeScript verification across `src/` and `test/` without emitting. |
-| `npm test` | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures. |
-| `npm run package` | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
+| Command                | Description                                                                                                                          |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`        | Compiles `src/index.ts` into the root `export.js` bundle using esbuild.                                                              |
+| `npm run watch`        | Watches `src/` for file changes and rebuilds automatically.                                                                          |
+| `npm run typecheck`    | Runs strict TypeScript verification across `src/` and `test/` without emitting.                                                      |
+| `npm test`             | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures.                                                    |
+| `npm run format`       | Formats the codebase using Prettier.                                                                                                 |
+| `npm run format:check` | Verifies code formatting with Prettier without modifying files.                                                                      |
+| `npm run package`      | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
 
 ---
 

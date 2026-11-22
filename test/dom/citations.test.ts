@@ -43,7 +43,8 @@ describe('Citation removal without breaking real links', () => {
   it('never marks prose elements like paragraphs, tables or headings as citation badges', () => {
     const p = document.createElement('p');
     p.className = 'citation-summary';
-    p.textContent = 'This is a long analytical explanation with detailed findings and citations.';
+    p.textContent =
+      'This is a long analytical explanation with detailed findings and citations.';
     expect(isCitationBadge(p, 'assistant')).toBe(false);
 
     const table = document.createElement('div');
@@ -56,7 +57,8 @@ describe('Citation removal without breaking real links', () => {
   it('detects interactive pill chips next to prose with favicon icons', () => {
     const container = document.createElement('div');
     const prose = document.createElement('p');
-    prose.textContent = 'According to recent documentation, the API endpoint is deprecated.';
+    prose.textContent =
+      'According to recent documentation, the API endpoint is deprecated.';
 
     const pill = document.createElement('div');
     pill.className = 'rounded-full badge';

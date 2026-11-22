@@ -35,8 +35,15 @@ export interface DomCleanerOptions {
 }
 
 export interface DomCleaner {
-  clean: (node: Node, inVisualLayout?: boolean, role?: ConversationRole) => Node;
-  cleanTurn: (turn: Element, role?: ConversationRole) => HTMLElement | DocumentFragment;
+  clean: (
+    node: Node,
+    inVisualLayout?: boolean,
+    role?: ConversationRole
+  ) => Node;
+  cleanTurn: (
+    turn: Element,
+    role?: ConversationRole
+  ) => HTMLElement | DocumentFragment;
 }
 
 export interface ScanStats {

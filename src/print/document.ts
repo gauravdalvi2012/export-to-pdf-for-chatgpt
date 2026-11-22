@@ -2,11 +2,21 @@ import { sleep } from '../utils.js';
 import { generatePrintStyles } from './styles.js';
 import type { ExportSettings } from '../types.js';
 
-export function isTransientProgress(item: Element, next?: Element | null, includeProgress = false): boolean {
-  if (includeProgress || !next ||
-      !item.classList.contains('assistant') || !next.classList.contains('assistant')) return false;
+export function isTransientProgress(
+  item: Element,
+  next?: Element | null,
+  includeProgress = false
+): boolean {
+  if (
+    includeProgress ||
+    !next ||
+    !item.classList.contains('assistant') ||
+    !next.classList.contains('assistant')
+  )
+    return false;
   const body = item.querySelector('.message-content');
-  if (!body || body.querySelector('pre,table,figure,.message-attachments')) return false;
+  if (!body || body.querySelector('pre,table,figure,.message-attachments'))
+    return false;
   const value = (body.textContent || '').replace(/\s+/g, ' ').trim();
   if (value.length > 560) return false;
   // Only hide status-like assistant updates when another assistant message
@@ -17,7 +27,7 @@ export function isTransientProgress(item: Element, next?: Element | null, includ
     /^(?:i found|i(?:'|’)ve (?:added|removed|updated|finished|found)).{0,160}\b(?:testing|checking|before packaging|next)\b/i,
     /\b(?:i(?:'|’)m|i(?:'|’)ll|i will)\s+(?:checking|testing|verifying|packaging|updating|changing|adding|building|generating|comparing|rerunning|running|reviewing|finishing)\b/i
   ];
-  return phrases.some(re => re.test(value));
+  return phrases.some((re) => re.test(value));
 }
 
 export interface AssembleDocumentOptions {
@@ -67,21 +77,28 @@ export function assembleDocument({
   if (scanWarnings.length) {
     const warning = doc.createElement('p');
     warning.className = 'export-scan-warning';
-    warning.textContent = 'Export may be incomplete: ' + scanWarnings.join(' ') +
+    warning.textContent =
+      'Export may be incomplete: ' +
+      scanWarnings.join(' ') +
       ' Try reloading the conversation and exporting again.';
     doc.body.appendChild(warning);
   }
 
   let omittedProgress = 0;
   transcript.forEach((section, index) => {
-    if (isTransientProgress(section, transcript[index + 1], opts.includeProgress)) {
+    if (
+      isTransientProgress(section, transcript[index + 1], opts.includeProgress)
+    ) {
       omittedProgress++;
     } else {
       doc.body.appendChild(section);
     }
   });
 
-  if (omittedProgress) console.info(`ChatGPT PDF: skipped ${omittedProgress} transient progress updates.`);
+  if (omittedProgress)
+    console.info(
+      `ChatGPT PDF: skipped ${omittedProgress} transient progress updates.`
+    );
 }
 
 export function openPrintWindow(doc: Document): void {
@@ -94,20 +111,39 @@ export function openPrintWindow(doc: Document): void {
     URL.revokeObjectURL(url);
     throw new Error('Allow pop-ups for chatgpt.com to print the conversation.');
   }
-  printWindow.addEventListener('load', async () => {
-    try {
-      await (printWindow.document as unknown as { fonts?: { ready: Promise<void> } }).fonts?.ready;
-      await Promise.race([
-        Promise.all(Array.from(printWindow.document.images).map((img) => img.complete ?
-          Promise.resolve() : new Promise<void>((resolve) => {
-            img.addEventListener('load', () => resolve(), { once: true });
-            img.addEventListener('error', () => resolve(), { once: true });
-          }))),
-        sleep(4000)
-      ]);
-    } catch { /* Images are best-effort; proceed to print. */ }
-    printWindow.focus();
-    printWindow.print();
-  }, { once: true });
+  printWindow.addEventListener(
+    'load',
+    async () => {
+      try {
+        await (
+          printWindow.document as unknown as {
+            fonts?: { ready: Promise<void> };
+          }
+        ).fonts?.ready;
+        await Promise.race([
+          Promise.all(
+            Array.from(printWindow.document.images).map((img) =>
+              img.complete
+                ? Promise.resolve()
+                : new Promise<void>((resolve) => {
+                    img.addEventListener('load', () => resolve(), {
+                      once: true
+                    });
+                    img.addEventListener('error', () => resolve(), {
+                      once: true
+                    });
+                  })
+            )
+          ),
+          sleep(4000)
+        ]);
+      } catch {
+        /* Images are best-effort; proceed to print. */
+      }
+      printWindow.focus();
+      printWindow.print();
+    },
+    { once: true }
+  );
   setTimeout(() => URL.revokeObjectURL(url), 120_000);
 }

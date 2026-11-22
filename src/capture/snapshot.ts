@@ -4,7 +4,10 @@ export interface SnapshotManagerOptions {
   scrollHost: HTMLElement;
   getProgressHost?: () => HTMLElement | null;
   checkCancelled: () => void;
-  waitForSettled: (opts?: { minimum?: number; maximum?: number }) => Promise<unknown>;
+  waitForSettled: (opts?: {
+    minimum?: number;
+    maximum?: number;
+  }) => Promise<unknown>;
   scanStats: { visualCandidates: number; visualSnapshots: number };
 }
 
@@ -24,45 +27,87 @@ export function createSnapshotManager({
   // Detect only bounded, visually meaningful containers; never screenshot the
   // full assistant answer, which would destroy selectable/searchable text.
   function colorfulDescendant(element: Element): boolean {
-    const descendants = [element, ...Array.from(element.querySelectorAll('*')).slice(0, 36)];
-    return descendants.some(child => {
-      if (child.tagName === 'IMG' || child.tagName === 'CANVAS' || child.tagName === 'SVG') return true;
-      if (typeof child.getBoundingClientRect !== 'function' || typeof getComputedStyle === 'undefined') return false;
+    const descendants = [
+      element,
+      ...Array.from(element.querySelectorAll('*')).slice(0, 36)
+    ];
+    return descendants.some((child) => {
+      if (
+        child.tagName === 'IMG' ||
+        child.tagName === 'CANVAS' ||
+        child.tagName === 'SVG'
+      )
+        return true;
+      if (
+        typeof child.getBoundingClientRect !== 'function' ||
+        typeof getComputedStyle === 'undefined'
+      )
+        return false;
       const r = child.getBoundingClientRect();
       if (r.width < 12 || r.height < 8) return false;
       const st = getComputedStyle(child);
-      const parentBg = child.parentElement ? getComputedStyle(child.parentElement).backgroundColor : '';
-      return st.backgroundImage !== 'none' ||
-        (st.backgroundColor !== 'rgba(0, 0, 0, 0)' && st.backgroundColor !== 'transparent' && st.backgroundColor !== parentBg);
+      const parentBg = child.parentElement
+        ? getComputedStyle(child.parentElement).backgroundColor
+        : '';
+      return (
+        st.backgroundImage !== 'none' ||
+        (st.backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+          st.backgroundColor !== 'transparent' &&
+          st.backgroundColor !== parentBg)
+      );
     });
   }
 
   function isSnapshotCandidate(element: Element, root: Element): boolean {
-    if (element === root || !['DIV','SECTION','FIGURE'].includes(element.tagName)) return false;
-    if (element.closest('.group\\/user-message, .turn-action-controls')) return false;
+    if (
+      element === root ||
+      !['DIV', 'SECTION', 'FIGURE'].includes(element.tagName)
+    )
+      return false;
+    if (element.closest('.group\\/user-message, .turn-action-controls'))
+      return false;
     if (element.querySelector('table, pre, textarea, input')) return false;
     // Native images/SVGs retain better quality when copied directly. Only
     // rasterize unsupported CSS/canvas-based visuals.
-    if (element.querySelector('img, svg') && !element.querySelector('canvas')) return false;
-    if (typeof element.getBoundingClientRect !== 'function' || typeof getComputedStyle === 'undefined') return false;
+    if (element.querySelector('img, svg') && !element.querySelector('canvas'))
+      return false;
+    if (
+      typeof element.getBoundingClientRect !== 'function' ||
+      typeof getComputedStyle === 'undefined'
+    )
+      return false;
     const r = element.getBoundingClientRect();
-    if (r.width < 70 || r.height < 35 || r.width > 1300 || r.height > 950) return false;
-    const text = (element as HTMLElement).innerText || element.textContent || '';
+    if (r.width < 70 || r.height < 35 || r.width > 1300 || r.height > 950)
+      return false;
+    const text =
+      (element as HTMLElement).innerText || element.textContent || '';
     if (text.length > 1700) return false;
     const hint = [
       element.className,
       element.getAttribute('data-testid'),
       element.getAttribute('role'),
       element.getAttribute('aria-label')
-    ].filter((v): v is string => typeof v === 'string').join(' ');
+    ]
+      .filter((v): v is string => typeof v === 'string')
+      .join(' ');
 
-    const specialized = /(?:chart|plot|graph|diagram|visuali[sz]|recharts|highcharts|plotly|echarts|map-widget|flowchart|app-block|static-visual|custom-widget)/i.test(hint);
+    const specialized =
+      /(?:chart|plot|graph|diagram|visuali[sz]|recharts|highcharts|plotly|echarts|map-widget|flowchart|app-block|static-visual|custom-widget)/i.test(
+        hint
+      );
     const style = getComputedStyle(element);
     const children = Array.from(element.children);
-    const gallery = Boolean(children.length >= 2 && children.length <= 5 &&
-      ((style.display && style.display.includes('grid')) || ((style.display && style.display.includes('flex')) && style.flexDirection === 'row')) &&
-      children.filter(child => colorfulDescendant(child)).length >= 2 &&
-      r.height < 480 && text.length < 480);
+    const gallery = Boolean(
+      children.length >= 2 &&
+      children.length <= 5 &&
+      ((style.display && style.display.includes('grid')) ||
+        (style.display &&
+          style.display.includes('flex') &&
+          style.flexDirection === 'row')) &&
+      children.filter((child) => colorfulDescendant(child)).length >= 2 &&
+      r.height < 480 &&
+      text.length < 480
+    );
     return Boolean((specialized && colorfulDescendant(element)) || gallery);
   }
 
@@ -76,20 +121,33 @@ export function createSnapshotManager({
     const hostRect = scrollHost.getBoundingClientRect();
     const previousTop = scrollHost.scrollTop;
     let rect = element.getBoundingClientRect();
-    if (rect.width < 10 || rect.height < 10 || rect.width * rect.height > 850000 ||
-        rect.height > hostRect.height-8 || !chrome?.runtime?.sendMessage) return null;
+    if (
+      rect.width < 10 ||
+      rect.height < 10 ||
+      rect.width * rect.height > 850000 ||
+      rect.height > hostRect.height - 8 ||
+      !chrome?.runtime?.sendMessage
+    )
+      return null;
     const progressHost = getProgressHost?.();
     try {
       // A virtualized turn may be rendered but partly clipped by the
       // transcript's scroll host. Center the widget just for its capture.
-      if (rect.top < hostRect.top+2 || rect.bottom > hostRect.bottom-2) {
-        scrollHost.scrollTop += rect.top - hostRect.top - (hostRect.height-rect.height)/2;
-        await waitForSettled({minimum:400,maximum:1800});
+      if (rect.top < hostRect.top + 2 || rect.bottom > hostRect.bottom - 2) {
+        scrollHost.scrollTop +=
+          rect.top - hostRect.top - (hostRect.height - rect.height) / 2;
+        await waitForSettled({ minimum: 400, maximum: 1800 });
         rect = element.getBoundingClientRect();
       }
-      if (!element.isConnected || rect.left < 0 || rect.top < hostRect.top-2 ||
-          rect.right > viewportW || rect.bottom > hostRect.bottom+2 ||
-          rect.bottom > viewportH) return null;
+      if (
+        !element.isConnected ||
+        rect.left < 0 ||
+        rect.top < hostRect.top - 2 ||
+        rect.right > viewportW ||
+        rect.bottom > hostRect.bottom + 2 ||
+        rect.bottom > viewportH
+      )
+        return null;
       // Never paint the export-progress overlay into the widget snapshot.
       if (progressHost) progressHost.style.visibility = 'hidden';
       await afterPaint();
@@ -98,7 +156,9 @@ export function createSnapshotManager({
       if (remaining) await sleep(remaining);
       checkCancelled();
       lastCaptureAt = performance.now();
-      const response = await chrome.runtime.sendMessage({type: 'CHAT_PDF_CAPTURE_WIDGET'});
+      const response = await chrome.runtime.sendMessage({
+        type: 'CHAT_PDF_CAPTURE_WIDGET'
+      });
       if (!response?.dataUrl) return null;
       const screenshot = new Image();
       await new Promise<void>((resolve, reject) => {
@@ -126,7 +186,10 @@ export function createSnapshotManager({
       );
       return crop.toDataURL('image/png');
     } catch (error) {
-      console.debug('ChatGPT PDF: static widget capture unavailable; preserving HTML.', error);
+      console.debug(
+        'ChatGPT PDF: static widget capture unavailable; preserving HTML.',
+        error
+      );
       return null;
     } finally {
       scrollHost.scrollTop = previousTop;
@@ -138,7 +201,11 @@ export function createSnapshotManager({
     const all = Array.from(root.querySelectorAll('div,section,figure'));
     const selected: Element[] = [];
     for (const element of all) {
-      if (!isSnapshotCandidate(element, root) || selected.some(parent => parent.contains(element))) continue;
+      if (
+        !isSnapshotCandidate(element, root) ||
+        selected.some((parent) => parent.contains(element))
+      )
+        continue;
       selected.push(element);
       if (selected.length >= 12) break;
     }
@@ -146,7 +213,9 @@ export function createSnapshotManager({
       const element = selected[index];
       if (snapshotCache.has(element)) continue;
       checkCancelled();
-      const turnKey = element.closest('[data-turn-key]')?.getAttribute('data-turn-key') || 'unknown';
+      const turnKey =
+        element.closest('[data-turn-key]')?.getAttribute('data-turn-key') ||
+        'unknown';
       const visualKey = `${turnKey}:${index}:${(element.textContent || '').slice(0, 90)}`;
       scanStats.visualCandidates++;
       if (snapshotCount >= 90) {

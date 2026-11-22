@@ -1,7 +1,11 @@
 const SETTINGS_KEY = 'pdfExportSettings';
 const defaults = Object.freeze({
-  theme: 'light', paper: 'A4', pageNumbers: true,
-  titleAndDate: true, userBubbles: true, includeProgress: false
+  theme: 'light',
+  paper: 'A4',
+  pageNumbers: true,
+  titleAndDate: true,
+  userBubbles: true,
+  includeProgress: false
 });
 
 const form = document.getElementById('settings-form');
@@ -12,7 +16,9 @@ let statusTimer;
 function readSettings() {
   const data = new FormData(form);
   return {
-    theme: ['light', 'dark', 'black'].includes(data.get('theme')) ? data.get('theme') : defaults.theme,
+    theme: ['light', 'dark', 'black'].includes(data.get('theme'))
+      ? data.get('theme')
+      : defaults.theme,
     paper: data.get('paper') || defaults.paper,
     pageNumbers: form.elements.pageNumbers.checked,
     titleAndDate: form.elements.titleAndDate.checked,
@@ -22,12 +28,19 @@ function readSettings() {
 }
 
 function applySettings(settings) {
-  settings = { ...settings, theme: ['light', 'dark', 'black'].includes(settings.theme) ? settings.theme : defaults.theme };
+  settings = {
+    ...settings,
+    theme: ['light', 'dark', 'black'].includes(settings.theme)
+      ? settings.theme
+      : defaults.theme
+  };
   for (const [key, value] of Object.entries(settings)) {
     if (typeof value === 'boolean') {
       form.elements[key].checked = value;
     } else {
-      const radio = form.querySelector(`input[name="${key}"][value="${value}"]`);
+      const radio = form.querySelector(
+        `input[name="${key}"][value="${value}"]`
+      );
       if (radio) radio.checked = true;
     }
   }
@@ -49,7 +62,9 @@ async function save() {
     await chrome.storage.sync.set({ [SETTINGS_KEY]: settings });
     status.textContent = 'Saved';
     clearTimeout(statusTimer);
-    statusTimer = setTimeout(() => { status.textContent = 'Settings are saved automatically'; }, 1600);
+    statusTimer = setTimeout(() => {
+      status.textContent = 'Settings are saved automatically';
+    }, 1600);
   } catch (error) {
     console.error('Unable to save export preferences:', error);
     status.textContent = 'Could not save settings';

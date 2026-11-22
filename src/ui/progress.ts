@@ -8,9 +8,10 @@ export interface ProgressIndicator {
 export function createProgressIndicator(): ProgressIndicator {
   const progressHost = document.createElement('div');
   progressHost.id = 'chatpdf-export-progress';
-  progressHost.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:2147483647;' +
+  progressHost.style.cssText =
+    'position:fixed;right:18px;bottom:18px;z-index:2147483647;' +
     'width:300px;max-width:calc(100vw - 36px);font-family:Arial,Helvetica,sans-serif;';
-  const progressShadow = progressHost.attachShadow({mode:'closed'});
+  const progressShadow = progressHost.attachShadow({ mode: 'closed' });
   progressShadow.innerHTML = `<style>
     *{box-sizing:border-box}
     .panel{background:#20242b;color:#f7f8fa;padding:15px 16px 12px;border:1px solid #50596a;
@@ -44,10 +45,15 @@ export function createProgressIndicator(): ProgressIndicator {
     if (scanCancelled) throw new Error('Export cancelled.');
   }
 
-  function showProgress(label: string, fraction: number, description?: string): void {
+  function showProgress(
+    label: string,
+    fraction: number,
+    description?: string
+  ): void {
     if (progressHost && progressHost.isConnected) {
       if (progressStage) progressStage.textContent = label;
-      if (progressBar) progressBar.style.width = `${Math.max(0, Math.min(100, Math.round(fraction * 100)))}%`;
+      if (progressBar)
+        progressBar.style.width = `${Math.max(0, Math.min(100, Math.round(fraction * 100)))}%`;
       if (description && progressInfo) progressInfo.textContent = description;
     }
   }
