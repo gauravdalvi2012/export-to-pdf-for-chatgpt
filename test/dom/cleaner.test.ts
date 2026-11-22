@@ -127,4 +127,81 @@ describe('DOM cleaner sanitization and transformation', () => {
     expect(cleaned.querySelector('thead')).not.toBeNull();
     expect(cleaned.querySelector('thead th')?.textContent).toBe('Column A');
   });
+
+  it('preserves code blocks and formats pre elements', () => {
+    const cleaner = createDomCleaner({
+      doc,
+      snapshotCache: { get: () => undefined, has: () => false },
+      userAttachmentNodes: new Set()
+    });
+
+    const pre = document.createElement('pre');
+    const code = document.createElement('code');
+    code.textContent = 'const answer = 42;\nconsole.log(answer);';
+    pre.appendChild(code);
+
+    const cleaned = cleaner(pre, false, 'assistant') as HTMLPreElement;
+    expect(cleaned.tagName).toBe('PRE');
+    expect(cleaned.querySelector('code')?.textContent).toBe(
+      'const answer = 42;\nconsole.log(answer);'
+    );
+  });
+
+  it('sanitizes SVG elements keeping valid attributes', () => {
+    const cleaner = createDomCleaner({
+      doc,
+      snapshotCache: { get: () => undefined, has: () => false },
+      userAttachmentNodes: new Set()
+    });
+
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" onclick="malicious()">
+        <path d="M0 0h24v24H0z" fill="currentColor"/>
+      </svg>
+    `;
+
+    const cleaned = cleaner(div, false, 'assistant') as HTMLElement;
+    const svg = cleaned.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg?.hasAttribute('onclick')).toBe(false);
+    expect(svg?.getAttribute('width')).toBe('24');
+  });
+
+  it('transforms download buttons and links into chat-only download labels', () => {
+    const cleaner = createDomCleaner({
+      doc,
+      snapshotCache: { get: () => undefined, has: () => false },
+      userAttachmentNodes: new Set()
+    });
+
+    const div = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.textContent = 'Download analysis.xlsx';
+
+    const link = document.createElement('a');
+    link.textContent = 'View report.pdf';
+
+    div.append(btn, link);
+
+    const cleaned = cleaner(div, false, 'assistant') as HTMLElement;
+    const labels = cleaned.querySelectorAll('.chat-only-download');
+    expect(labels.length).toBe(2);
+  });
+
+  it('prunes empty paragraphs or spans left by removed widgets or citations', () => {
+    const cleaner = createDomCleaner({
+      doc,
+      snapshotCache: { get: () => undefined, has: () => false },
+      userAttachmentNodes: new Set()
+    });
+
+    const div = document.createElement('div');
+    const pEmpty = document.createElement('p');
+    pEmpty.textContent = '   ';
+    div.appendChild(pEmpty);
+
+    const cleaned = cleaner(div, false, 'assistant') as HTMLElement;
+    expect(cleaned.querySelector('p')).toBeNull();
+  });
 });

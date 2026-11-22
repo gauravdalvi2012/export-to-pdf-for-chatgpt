@@ -1,8 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { safeURL, quotedCSS } from '../src/utils.js';
+import { safeURL, quotedCSS, sleep, afterPaint } from '../src/utils.js';
 
 describe('Utility functions', () => {
+  describe('sleep and afterPaint', () => {
+    it('sleep resolves after requested duration', async () => {
+      const start = Date.now();
+      await sleep(10);
+      expect(Date.now() - start).toBeGreaterThanOrEqual(5);
+    });
+
+    it('afterPaint resolves after animation frame', async () => {
+      await expect(afterPaint()).resolves.toBeUndefined();
+    });
+  });
+
   describe('safeURL', () => {
+    it('returns null for empty or nullish values', () => {
+      expect(safeURL(null)).toBeNull();
+      expect(safeURL(undefined)).toBeNull();
+      expect(safeURL('')).toBeNull();
+    });
+
     it('allows valid http and https URLs', () => {
       expect(safeURL('https://chatgpt.com/c/123')).toBe(
         'https://chatgpt.com/c/123'
@@ -33,6 +51,11 @@ describe('Utility functions', () => {
       expect(quotedCSS('Title with \\backslashes\\')).toBe(
         '"Title with \\\\backslashes\\\\"'
       );
+    });
+
+    it('handles null and undefined', () => {
+      expect(quotedCSS(null)).toBe('""');
+      expect(quotedCSS(undefined)).toBe('""');
     });
   });
 });

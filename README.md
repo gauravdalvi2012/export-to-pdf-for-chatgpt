@@ -4,6 +4,7 @@ A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversati
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Published-brightgreen?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
 [![CI](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml/badge.svg)](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-80%25-brightgreen.svg)](#️-development--build-scripts)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -62,15 +63,16 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 
 The codebase is written in TypeScript, organized into modular domain modules under `src/`, bundled with `esbuild`, and tested with `vitest`.
 
-| Command                | Description                                                                                                                          |
-| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run build`        | Compiles `src/` TypeScript entry points into root bundles with esbuild.                                                              |
-| `npm run watch`        | Watches `src/` for file changes and rebuilds automatically.                                                                          |
-| `npm run typecheck`    | Runs strict TypeScript verification across `src/` and `test/` without emitting.                                                      |
-| `npm test`             | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures.                                                    |
-| `npm run format`       | Formats the codebase using Prettier.                                                                                                 |
-| `npm run format:check` | Verifies code formatting with Prettier without modifying files.                                                                      |
-| `npm run package`      | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
+| Command                 | Description                                                                                                                          |
+| :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`         | Compiles `src/` TypeScript entry points into root bundles with esbuild.                                                              |
+| `npm run watch`         | Watches `src/` for file changes and rebuilds automatically.                                                                          |
+| `npm run typecheck`     | Runs strict TypeScript verification across `src/` and `test/` without emitting.                                                      |
+| `npm test`              | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures.                                                    |
+| `npm run test:coverage` | Executes Vitest with v8 coverage provider and generates terminal & HTML coverage reports.                                            |
+| `npm run format`        | Formats the codebase using Prettier.                                                                                                 |
+| `npm run format:check`  | Verifies code formatting with Prettier without modifying files.                                                                      |
+| `npm run package`       | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
 
 ---
 
@@ -110,11 +112,21 @@ For an in-depth breakdown of algorithmic models, AST extraction, and security in
 └── test/
     ├── config.test.ts     # Configuration and palette schema tests
     ├── utils.test.ts      # URL sanitizer and CSS string escape tests
-    └── dom/
-        ├── cleaner.test.ts      # DOM sanitization and table normalization tests
-        ├── code.test.ts         # Indentation and line boundary preservation tests
-        ├── citations.test.ts    # Citation pill stripping without breaking real links
-        └── attachments.test.ts  # Attachment card and uploaded image badge tests
+    ├── capture/
+    │   └── snapshot.test.ts   # Widget detection and snapshot tests
+    ├── dom/
+    │   ├── attachments.test.ts # Attachment card and uploaded image badge tests
+    │   ├── citations.test.ts   # Citation pill stripping without breaking real links
+    │   ├── cleaner.test.ts     # DOM sanitization and table normalization tests
+    │   ├── code.test.ts        # Indentation and line boundary preservation tests
+    │   └── visual.test.ts      # Media dimension scaling and table header tests
+    ├── print/
+    │   ├── document.test.ts    # Document assembly and print window popup tests
+    │   └── styles.test.ts      # CSS palette and print style generation tests
+    ├── scanner/
+    │   └── scroller.test.ts    # Virtual DOM viewport scanner and settling tests
+    └── ui/
+        └── progress.test.ts    # Shadow DOM progress modal lifecycle tests
 ```
 
 ---

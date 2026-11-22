@@ -176,5 +176,35 @@ describe('Attachment badge extraction', () => {
       expect(pills.length).toBe(1);
       expect(pills[0].textContent).toContain('Image attachment');
     });
+
+    it('extracts attachment pills from user file button cards', () => {
+      const turn = document.createElement('div');
+      const user = document.createElement('div');
+      user.className = 'group/user-message';
+
+      const fileCard = document.createElement('button');
+      fileCard.setAttribute('role', 'button');
+      fileCard.innerHTML = `
+        <svg></svg>
+        <span>financial_report.pdf</span>
+        <span>PDF</span>
+      `;
+      user.appendChild(fileCard);
+      turn.appendChild(user);
+
+      const userAttachmentNodes = new Set<Element>();
+      const result = extractAttachments(
+        document,
+        turn,
+        user,
+        user,
+        [],
+        userAttachmentNodes
+      );
+
+      const pills = result.querySelectorAll('.attachment-pill');
+      expect(pills.length).toBe(1);
+      expect(pills[0].textContent).toContain('financial_report.pdf');
+    });
   });
 });
