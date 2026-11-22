@@ -29,6 +29,18 @@ This extension solves these issues by intelligently scanning the full conversati
 
 ---
 
+## ⚖️ How It Compares
+
+| Capability                        |      Standard `Ctrl+P`       | Screenshot Extensions  |   Cloud Export Services   |  **Export to PDF for ChatGPT**   |
+| :-------------------------------- | :--------------------------: | :--------------------: | :-----------------------: | :------------------------------: |
+| **Handles DOM Virtualization**    | ❌ Truncates after ~4 turns  | ⚠️ Fragmented stitches |  ⚠️ Requires public link  |  ✅ **Full adaptive unroller**   |
+| **True Vector Text (Searchable)** |            ✅ Yes            | ❌ Raster bitmap only  |      ⚠️ Inconsistent      |  ✅ **100% crisp vector text**   |
+| **Code Newline Preservation**     |    ❌ Concatenates tokens    | ❌ Non-copyable image  | ⚠️ Often loses formatting |  ✅ **AST boundary extraction**  |
+| **Visual Widget Snapshots**       | ❌ Charts & canvas disappear |      ✅ Captured       |     ❌ Broken scripts     | ✅ **ActiveTab coordinate crop** |
+| **100% Local (Zero Telemetry)**   |            ✅ Yes            |       ⚠️ Varies        | ❌ Server-side processing |   ✅ **Zero network requests**   |
+
+---
+
 ## ✨ Features
 
 - **Full Conversation Scanning:** Automatically scrolls through and captures long, virtualized conversations from the first prompt to the final reply without skipping turns.
