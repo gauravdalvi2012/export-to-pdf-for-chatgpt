@@ -2,6 +2,8 @@
 
 A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversations into beautifully formatted, readable PDFs through Chrome's native **Save as PDF** print dialog.
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Published-brightgreen?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
+
 ---
 
 ## 🎯 Why This Extension?
@@ -30,7 +32,11 @@ This extension solves these issues by intelligently scanning the full conversati
 
 ## 🚀 Installation & Usage
 
-### Loading as an Unpacked Extension (Developer Mode)
+### Option 1: Install from Chrome Web Store (Recommended)
+
+Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf) with one click.
+
+### Option 2: Build & Load from Source (Developer Mode)
 
 1. Clone or download this repository:
    ```bash
@@ -105,7 +111,10 @@ The codebase is organized into modular ES modules under `src/` and bundled with 
 
 ## 🔒 Privacy Policy
 
-This extension runs **strictly client-side**. It does not collect, store, transmit, or sell any personal data, chat transcripts, or telemetry. See [PRIVACY.md](PRIVACY.md) for the full policy.
+This extension runs **strictly client-side**. It does not collect, store, transmit, or sell any personal data, chat transcripts, or telemetry.
+
+- Full Policy in Repo: [PRIVACY.md](PRIVACY.md)
+- Official Web Version: [gauravdalvi.com/privacy/export-to-pdf-for-chatgpt](https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt)
 
 ---
 

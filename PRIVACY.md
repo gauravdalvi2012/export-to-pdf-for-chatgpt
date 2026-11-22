@@ -1,6 +1,7 @@
 # Privacy Policy for Export to PDF for ChatGPT
 
-*Last updated: November 19, 2026*
+*Last updated: November 19, 2026*  
+*Official Web Version: [https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt](https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt)*
 
 **Export to PDF for ChatGPT** ("the extension") is committed to respecting and protecting your privacy.
 

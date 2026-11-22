@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "Chrome extension to export ChatGPT conversations as clean, formatted PDFs.",
   "type": "module",
+  "author": "Gaurav Dalvi",
+  "license": "MIT",
+  "homepage": "https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt.git"
+  },
   "scripts": {
     "build": "esbuild src/index.js --bundle --format=iife --outfile=export.js",
     "watch": "esbuild src/index.js --bundle --format=iife --outfile=export.js --watch",
