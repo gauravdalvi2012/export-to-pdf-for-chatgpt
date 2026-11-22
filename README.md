@@ -29,15 +29,16 @@ This extension solves these issues by intelligently scanning the full conversati
 
 ---
 
-## ⚖️ How It Compares
+## ⚖️ Standard Browser Print vs. This Extension
 
-| Capability                        |      Standard `Ctrl+P`       | Screenshot Extensions  |   Cloud Export Services   |  **Export to PDF for ChatGPT**   |
-| :-------------------------------- | :--------------------------: | :--------------------: | :-----------------------: | :------------------------------: |
-| **Handles DOM Virtualization**    | ❌ Truncates after ~4 turns  | ⚠️ Fragmented stitches |  ⚠️ Requires public link  |  ✅ **Full adaptive unroller**   |
-| **True Vector Text (Searchable)** |            ✅ Yes            | ❌ Raster bitmap only  |      ⚠️ Inconsistent      |  ✅ **100% crisp vector text**   |
-| **Code Newline Preservation**     |    ❌ Concatenates tokens    | ❌ Non-copyable image  | ⚠️ Often loses formatting |  ✅ **AST boundary extraction**  |
-| **Visual Widget Snapshots**       | ❌ Charts & canvas disappear |      ✅ Captured       |     ❌ Broken scripts     | ✅ **ActiveTab coordinate crop** |
-| **100% Local (Zero Telemetry)**   |            ✅ Yes            |       ⚠️ Varies        | ❌ Server-side processing |   ✅ **Zero network requests**   |
+| Printing Aspect                | Default Browser Print (`Ctrl+P`)                                                          | With This Extension                                                                      |
+| :----------------------------- | :---------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **Long Conversations**         | ❌ **Truncated**: ChatGPT's virtualized DOM unmounts offscreen turns, cutting chats.      | ✅ **Complete**: Recursively scans and stabilizes all virtualized turns before capture.  |
+| **Code Blocks**                | ⚠️ **Formatting Glitches**: Syntax spans can wrap awkwardly or lose indentation.          | ✅ **Preserved**: Retains line boundaries and indentation across Bash, Python, and JSON. |
+| **Assistant Charts & Widgets** | ❌ **Missing**: Canvas and dynamic chart components often disappear on printed pages.     | ✅ **Captured**: High-resolution static image snapshots embedded directly in document.   |
+| **Citations & UI Clutter**     | ❌ **Cluttered**: Search chips (`OBS`, `GitHub`), "Copy", and "Regenerate" buttons print. | ✅ **Cleaned**: Strips interactive buttons and popover pills while keeping real links.   |
+| **Formatting & Themes**        | ❌ **Unstyled**: Prints raw webpage layout with browser margins and header URLs.          | ✅ **Tailored CSS**: Clean typography, `@page` pagination (`Page X of Y`), and 3 themes. |
+| **Privacy & Security**         | ✅ **100% Local**: No external network requests.                                          | ✅ **100% Local**: Runs entirely in-browser memory with zero telemetry or network calls. |
 
 ---
 
