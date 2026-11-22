@@ -3,6 +3,9 @@
 A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversations into beautifully formatted, readable PDFs through Chrome's native **Save as PDF** print dialog.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Published-brightgreen?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
+[![CI](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml/badge.svg)](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml)
+[![Coverage](.github/badges/coverage.svg)](#️-development--build-scripts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
@@ -14,6 +17,31 @@ This extension solves these issues by intelligently scanning the full conversati
 
 ---
 
+## 🖼️ Preview
+
+<div align="center">
+  <img src=".github/assets/preview-print.png" alt="ChatGPT Export to PDF - Chrome Print Preview" width="900" />
+  <p><em>Complete unrolled conversation rendering in Chrome's native print preview dialog with headers, page numbers, and preserved code blocks.</em></p>
+  <br />
+  <img src=".github/assets/preview-options.png" alt="ChatGPT Export to PDF - Settings and Themes" width="900" />
+  <p><em>Customizable print options: Light (paper standard), Dark, and OLED Black themes, paper formats (A4 / US Letter), and display toggles.</em></p>
+</div>
+
+---
+
+## ⚖️ Standard Browser Print vs. This Extension
+
+| Printing Aspect                | Default Browser Print (`Ctrl+P`)                                                          | With This Extension                                                                      |
+| :----------------------------- | :---------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **Long Conversations**         | ❌ **Truncated**: ChatGPT's virtualized DOM unmounts offscreen turns, cutting chats.      | ✅ **Complete**: Recursively scans and stabilizes all virtualized turns before capture.  |
+| **Code Blocks**                | ⚠️ **Formatting Glitches**: Syntax spans can wrap awkwardly or lose indentation.          | ✅ **Preserved**: Retains line boundaries and indentation across Bash, Python, and JSON. |
+| **Assistant Charts & Widgets** | ❌ **Missing**: Canvas and dynamic chart components often disappear on printed pages.     | ✅ **Captured**: High-resolution static image snapshots embedded directly in document.   |
+| **Citations & UI Clutter**     | ❌ **Cluttered**: Search chips (`OBS`, `GitHub`), "Copy", and "Regenerate" buttons print. | ✅ **Cleaned**: Strips interactive buttons and popover pills while keeping real links.   |
+| **Formatting & Themes**        | ❌ **Unstyled**: Prints raw webpage layout with browser margins and header URLs.          | ✅ **Tailored CSS**: Clean typography, `@page` pagination (`Page X of Y`), and 3 themes. |
+| **Privacy & Security**         | ✅ **100% Local**: No external network requests.                                          | ✅ **100% Local**: Runs entirely in-browser memory with zero telemetry or network calls. |
+
+---
+
 ## ✨ Features
 
 - **Full Conversation Scanning:** Automatically scrolls through and captures long, virtualized conversations from the first prompt to the final reply without skipping turns.
@@ -21,7 +49,7 @@ This extension solves these issues by intelligently scanning the full conversati
 - **Visual Snapshotting:** Captures rendered assistant diagrams, charts, and custom CSS/canvas widgets as high-resolution static snapshots via Chrome's tab capture API.
 - **Citation Cleanup:** Automatically strips distracting search popovers and footnote pills (e.g. `OBS`, `GitHub` source chips) while keeping genuine hyperlinks intact.
 - **Compact Attachment Pills:** Replaces user-uploaded files and screenshots with neat metadata badges rather than broken image tags or empty spaces.
-- **Customizable Print Themes:** 
+- **Customizable Print Themes:**
   - **Light** (`#FFFFFF`) — standard paper print (recommended).
   - **Dark** (`#1F2329`) — easy on the eyes.
   - **Black** (`#000000`) — high-contrast OLED black.
@@ -58,45 +86,77 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 
 ## 🛠️ Development & Build Scripts
 
-The codebase is organized into modular ES modules under `src/` and bundled with `esbuild`.
+The codebase is written in TypeScript, organized into modular domain modules under `src/`, bundled with `esbuild`, and tested with `vitest`.
 
-| Command | Description |
-| :--- | :--- |
-| `npm run build` | Compiles `src/index.js` into the root `export.js` bundle. |
-| `npm run watch` | Watches `src/` for file changes and rebuilds automatically. |
-| `npm run package` | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
+| Command                 | Description                                                                                                                          |
+| :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`         | Compiles `src/` TypeScript entry points into root bundles with esbuild.                                                              |
+| `npm run watch`         | Watches `src/` for file changes and rebuilds automatically.                                                                          |
+| `npm run typecheck`     | Runs strict TypeScript verification across `src/` and `test/` without emitting.                                                      |
+| `npm test`              | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures.                                                    |
+| `npm run test:coverage` | Executes Vitest with v8 coverage provider and generates terminal & HTML coverage reports.                                            |
+| `npm run format`        | Formats the codebase using Prettier.                                                                                                 |
+| `npm run format:check`  | Verifies code formatting with Prettier without modifying files.                                                                      |
+| `npm run package`       | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
 
 ---
 
 ## 📂 Project Structure
 
+For an in-depth breakdown of algorithmic models, AST extraction, and security invariants, read [ARCHITECTURE.md](ARCHITECTURE.md). To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ```text
+├── .github/
+│   ├── assets/            # High-resolution visual showcase and preview screenshots
+│   ├── badges/            # Live SVG and JSON coverage badge assets
+│   └── workflows/         # GitHub Actions CI automated pipeline
 ├── manifest.json          # Chrome Extension Manifest V3 configuration
-├── background.js          # Service worker for activeTab widget capture
 ├── options.html / .css    # Settings page (theme, page size, display options)
-├── options.js             # Options storage and live preview logic
 ├── icons/                 # Extension icons (16px, 32px, 48px, 128px)
+├── prettier.config.js     # Code formatting configuration
 ├── scripts/
+│   ├── generate-badge.js  # Automated SVG and Shields.io coverage badge builder
 │   └── package.js         # Automated distribution and zip packaging script
-└── src/
-    ├── index.js           # Main export orchestrator and lifecycle coordinator
-    ├── config.js          # Defaults, palettes, tag/attribute sets, regex patterns
-    ├── utils.js           # DOM helpers, safe URL validators, CSS helpers
-    ├── ui/
-    │   └── progress.js    # Shadow DOM progress overlay with cancellation
-    ├── scanner/
-    │   └── scroller.js    # Adaptive scrolling, DOM settling & boundary checks
+├── src/
+│   ├── index.ts           # Main export orchestrator and lifecycle coordinator
+│   ├── background.ts      # Service worker for activeTab widget capture
+│   ├── options.ts         # Options storage and live preview logic
+│   ├── types.ts           # TypeScript interfaces for settings, turns, and snapshots
+│   ├── config.ts          # Defaults, palettes, tag/attribute sets, regex patterns
+│   ├── utils.ts           # DOM helpers, safe URL validators, CSS helpers
+│   ├── ui/
+│   │   └── progress.ts    # Shadow DOM progress overlay with cancellation
+│   ├── scanner/
+│   │   └── scroller.ts    # Adaptive scrolling, DOM settling & boundary checks
+│   ├── capture/
+│   │   └── snapshot.ts    # Widget detection & bounding box screenshot cropper
+│   ├── dom/
+│   │   ├── cleaner.ts     # DOM sanitizer and structure normalizer
+│   │   ├── code.ts        # Code line boundary and indentation preservation
+│   │   ├── citations.ts   # Citation pill and popover badge detection
+│   │   ├── attachments.ts # File upload cards and attachment badge parser
+│   │   └── visual.ts      # Layout grids, color blocks & table head normalizer
+│   └── print/
+│       ├── styles.ts      # Print media CSS, @page rules & pagination controls
+│       └── document.ts    # Document assembly, progress filtering & print trigger
+└── test/
+    ├── config.test.ts     # Configuration and palette schema tests
+    ├── utils.test.ts      # URL sanitizer and CSS string escape tests
     ├── capture/
-    │   └── snapshot.js    # Widget detection & bounding box screenshot cropper
+    │   └── snapshot.test.ts   # Widget detection and snapshot tests
     ├── dom/
-    │   ├── cleaner.js     # DOM sanitizer and structure normalizer
-    │   ├── code.js        # Code line boundary and indentation preservation
-    │   ├── citations.js   # Citation pill and popover badge detection
-    │   ├── attachments.js # File upload cards and attachment badge parser
-    │   └── visual.js      # Layout grids, color blocks & table head normalizer
-    └── print/
-        ├── styles.js      # Print media CSS, @page rules & pagination controls
-        └── document.js    # Document assembly, progress filtering & print trigger
+    │   ├── attachments.test.ts # Attachment card and uploaded image badge tests
+    │   ├── citations.test.ts   # Citation pill stripping without breaking real links
+    │   ├── cleaner.test.ts     # DOM sanitization and table normalization tests
+    │   ├── code.test.ts        # Indentation and line boundary preservation tests
+    │   └── visual.test.ts      # Media dimension scaling and table header tests
+    ├── print/
+    │   ├── document.test.ts    # Document assembly and print window popup tests
+    │   └── styles.test.ts      # CSS palette and print style generation tests
+    ├── scanner/
+    │   └── scroller.test.ts    # Virtual DOM viewport scanner and settling tests
+    └── ui/
+        └── progress.test.ts    # Shadow DOM progress modal lifecycle tests
 ```
 
 ---

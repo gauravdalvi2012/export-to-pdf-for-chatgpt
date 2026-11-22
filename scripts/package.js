@@ -37,8 +37,13 @@ if (fs.existsSync(ICONS_DIR)) {
   fs.cpSync(ICONS_DIR, path.join(DIST_DIR, 'icons'), { recursive: true });
 }
 
-console.log(`🗜️  Step 3: Creating Chrome Web Store upload zip (${ZIP_NAME})...`);
-execSync(`zip -r "${ZIP_NAME}" * -x "${ZIP_NAME}"`, { cwd: DIST_DIR, stdio: 'inherit' });
+console.log(
+  `🗜️  Step 3: Creating Chrome Web Store upload zip (${ZIP_NAME})...`
+);
+execSync(`zip -r "${ZIP_NAME}" * -x "${ZIP_NAME}"`, {
+  cwd: DIST_DIR,
+  stdio: 'inherit'
+});
 
 console.log('\n✅ Packaging complete!');
 console.log(`- Folder: dist/ (ready for "Load unpacked" testing)`);

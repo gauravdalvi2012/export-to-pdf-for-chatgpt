@@ -1,4 +1,7 @@
 node_modules/
 export.js
+background.js
+options.js
 dist/
-screenshot-*.png
+coverage/
+/screenshot-*.png

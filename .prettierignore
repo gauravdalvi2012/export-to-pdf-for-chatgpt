@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+export.js
+background.js
+options.js
+package-lock.json
+*.png
+*.zip

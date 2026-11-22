@@ -1,6 +1,6 @@
 # Privacy Policy — Export to PDF for ChatGPT
 
-*Official Web Version: [https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt](https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt)*
+_Official Web Version: [https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt](https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt)_
 
 ---
 

@@ -11,11 +11,25 @@
     "url": "https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt.git"
   },
   "scripts": {
-    "build": "esbuild src/index.js --bundle --format=iife --outfile=export.js",
-    "watch": "esbuild src/index.js --bundle --format=iife --outfile=export.js --watch",
+    "build:export": "esbuild src/index.ts --bundle --format=iife --outfile=export.js",
+    "build:background": "esbuild src/background.ts --bundle --format=esm --outfile=background.js",
+    "build:options": "esbuild src/options.ts --bundle --format=iife --outfile=options.js",
+    "build": "npm run build:export && npm run build:background && npm run build:options",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage && node scripts/generate-badge.js",
+    "test:watch": "vitest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "package": "node scripts/package.js"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "@types/chrome": "0.3.7",
+    "@vitest/coverage-v8": "5.1.1",
+    "esbuild": "0.28.2",
+    "happy-dom": "21.0.4",
+    "prettier": "3.10.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.1"
   }
 }
