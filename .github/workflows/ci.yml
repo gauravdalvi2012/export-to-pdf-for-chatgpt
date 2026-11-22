@@ -10,6 +10,8 @@ jobs:
   validate:
     name: Build, Lint & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout source
@@ -32,6 +34,17 @@ jobs:
 
       - name: Run automated tests & coverage (Vitest)
         run: npm run test:coverage
+
+      - name: Commit updated coverage badge
+        if: github.event_name == 'push'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain .github/badges)" ]; then
+            git add .github/badges
+            git commit -m "chore: update test coverage badge [skip ci]"
+            git push
+          fi
 
       - name: Build and package extension
         run: npm run package

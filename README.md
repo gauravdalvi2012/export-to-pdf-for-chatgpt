@@ -4,7 +4,7 @@ A privacy-first Chrome Extension (Manifest V3) to export full ChatGPT conversati
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Published-brightgreen?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
 [![CI](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml/badge.svg)](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/badge/Coverage-80%25-brightgreen.svg)](#️-development--build-scripts)
+[![Coverage](.github/badges/coverage.svg)](#️-development--build-scripts)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
