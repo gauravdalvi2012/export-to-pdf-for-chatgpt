@@ -1,26 +1,63 @@
-# Privacy Policy for Export to PDF for ChatGPT
+# Privacy Policy — Export to PDF for ChatGPT
 
-*Last updated: November 19, 2026*  
 *Official Web Version: [https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt](https://gauravdalvi.com/privacy/export-to-pdf-for-chatgpt)*
 
-**Export to PDF for ChatGPT** ("the extension") is committed to respecting and protecting your privacy.
+---
 
-## 1. Local Processing Only
-The extension operates entirely client-side inside your web browser. All conversation scanning, text extraction, visual snapshotting, and PDF document generation occur locally in your browser memory.
+## 1. Zero Remote Transmission & Local Processing
 
-## 2. Zero Data Collection or Transmission
-- The extension does **not** collect, store, track, transmit, or sell any personal data, chat history, account information, or telemetry.
-- No network requests are made to any remote or external servers by this extension.
-- The open conversation is accessed only when you explicitly click the extension toolbar icon on `https://chatgpt.com/*`.
+The extension operates entirely client-side within your browser runtime. All conversation extraction, DOM virtualization handling, Markdown/syntax preservation, and print styling happen strictly in volatile local memory:
 
-## 3. Permissions Used
-- **`activeTab`**: Used to interact with the active ChatGPT tab when you click the toolbar icon.
-- **`scripting`**: Used to execute the export script on the active tab to scan the conversation turns and prepare the printable PDF document.
-- **`storage`**: Used solely to persist your export formatting preferences (theme, paper size, page numbering).
-- **`https://chatgpt.com/*`**: Restricts the extension's execution strictly to ChatGPT conversation URLs.
+- **Zero Data Harvesting:** The extension does not record, track, log, transmit, sell, or monetize any user chat history, prompts, API keys, or personal account identifiers.
+- **Complete Network Isolation:** The extension contains zero remote API calls, zero analytics beacons, zero tracking pixels, and zero background network pings.
+- **User-Initiated Trigger:** The extension executes only when you explicitly invoke it while viewing an active ChatGPT tab.
 
-## 4. Third-Party Disclosures
-The extension does not share or sell any data to third parties under any circumstances.
+---
 
-## 5. Contact
-If you have any questions or feedback regarding this policy, please open an issue in this repository.
+## 2. Chrome Extension Permissions Justification
+
+In accordance with Chrome Web Store Developer Program Policies, the extension requests only the minimum least-privilege permissions necessary for its single purpose:
+
+- **`activeTab`:** Grants temporary, scoped access to the currently active ChatGPT conversation tab only when you click the extension action icon.
+- **`scripting`:** Executes the local client-side extraction script that unrolls virtualized DOM nodes and formats the document for Chrome's native print engine.
+- **`storage`:** Used via `chrome.storage.local` solely to save your local UI formatting options on your machine (such as light/dark print theme, page margin selection, and header timestamp toggle). Preferences never leave your device.
+- **`https://chatgpt.com/*`:** Restricts host execution strictly to official ChatGPT URLs, preventing the extension from ever running on or inspecting any other website.
+
+---
+
+## 3. Local Data Storage & User Deletion Rights
+
+The extension does not maintain servers, databases, or cloud infrastructure. All stored preferences reside on your machine in your browser profile:
+
+- **Local Scope:** Formatting preferences are stored strictly in `chrome.storage.local` without cloud synchronization across devices.
+- **Instant Deletion:** You can purge all saved preferences at any time by clearing extension data via `chrome://extensions` or by uninstalling the extension.
+
+---
+
+## 4. Third-Party Sharing & AI Training
+
+We do not sell, rent, disclose, or transfer any user data, prompts, or conversation content to third parties, advertising networks, data brokers, or AI model providers under any circumstances.
+
+---
+
+## 5. Browser Compatibility
+
+This extension is developed in compliance with the Google Chrome Extension Manifest V3 specification. It is fully compatible with Chromium-based browsers including Google Chrome, Brave, Microsoft Edge, Arc, and Opera.
+
+---
+
+## 6. Policy Changes
+
+If future releases introduce new features that require updated runtime capabilities, this privacy policy will be updated accordingly with a revised version number and timestamp prior to deployment on the Chrome Web Store.
+
+---
+
+## 7. Developer Contact & Inquiries
+
+For questions, technical support, or privacy inquiries regarding this extension, please contact:
+
+- **Developer:** Gaurav Dalvi
+- **Email:** [gdalvi20dec@gmail.com](mailto:gdalvi20dec@gmail.com)
+- **Website:** [https://gauravdalvi.com](https://gauravdalvi.com)
+- **Chrome Web Store:** [Export to PDF for ChatGPT](https://chromewebstore.google.com/detail/export-to-pdf-for-chatgpt/pfkbinehddbjfacdgcghoflahnllcpaf)
+- **Issue Tracker:** [GitHub Issues](https://github.com/gauravdalvi2012/export-to-pdf-for-chatgpt/issues)
