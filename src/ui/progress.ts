@@ -1,4 +1,11 @@
-export function createProgressIndicator() {
+export interface ProgressIndicator {
+  progressHost: HTMLElement;
+  showProgress: (label: string, fraction: number, description?: string) => void;
+  checkCancelled: () => void;
+  remove: () => void;
+}
+
+export function createProgressIndicator(): ProgressIndicator {
   const progressHost = document.createElement('div');
   progressHost.id = 'chatpdf-export-progress';
   progressHost.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:2147483647;' +
@@ -24,28 +31,28 @@ export function createProgressIndicator() {
     <div class="info" id="info">Checking loaded messages</div>
   </div>`;
   document.body.appendChild(progressHost);
-  const progressStage = progressShadow.getElementById('stage');
-  const progressBar = progressShadow.getElementById('bar');
-  const progressInfo = progressShadow.getElementById('info');
+  const progressStage = progressShadow.getElementById('stage') as HTMLElement;
+  const progressBar = progressShadow.getElementById('bar') as HTMLElement;
+  const progressInfo = progressShadow.getElementById('info') as HTMLElement;
   let scanCancelled = false;
-  progressShadow.getElementById('cancel').addEventListener('click', () => {
+  progressShadow.getElementById('cancel')?.addEventListener('click', () => {
     scanCancelled = true;
-    progressStage.textContent = 'Cancelling export…';
+    if (progressStage) progressStage.textContent = 'Cancelling export…';
   });
 
-  function checkCancelled() {
+  function checkCancelled(): void {
     if (scanCancelled) throw new Error('Export cancelled.');
   }
 
-  function showProgress(label, fraction, description) {
+  function showProgress(label: string, fraction: number, description?: string): void {
     if (progressHost && progressHost.isConnected) {
-      progressStage.textContent = label;
-      progressBar.style.width = `${Math.max(0, Math.min(100, Math.round(fraction * 100)))}%`;
-      if (description) progressInfo.textContent = description;
+      if (progressStage) progressStage.textContent = label;
+      if (progressBar) progressBar.style.width = `${Math.max(0, Math.min(100, Math.round(fraction * 100)))}%`;
+      if (description && progressInfo) progressInfo.textContent = description;
     }
   }
 
-  function remove() {
+  function remove(): void {
     progressHost?.remove();
   }
 

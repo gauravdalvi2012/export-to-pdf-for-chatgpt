@@ -1,7 +1,8 @@
 import { sleep } from '../utils.js';
 import { generatePrintStyles } from './styles.js';
+import type { ExportSettings } from '../types.js';
 
-export function isTransientProgress(item, next, includeProgress = false) {
+export function isTransientProgress(item: Element, next?: Element | null, includeProgress = false): boolean {
   if (includeProgress || !next ||
       !item.classList.contains('assistant') || !next.classList.contains('assistant')) return false;
   const body = item.querySelector('.message-content');
@@ -19,6 +20,16 @@ export function isTransientProgress(item, next, includeProgress = false) {
   return phrases.some(re => re.test(value));
 }
 
+export interface AssembleDocumentOptions {
+  doc: Document;
+  title: string;
+  sourceURL: string;
+  exportDate: string;
+  opts: ExportSettings;
+  transcript: Element[];
+  scanWarnings: string[];
+}
+
 export function assembleDocument({
   doc,
   title,
@@ -27,7 +38,7 @@ export function assembleDocument({
   opts,
   transcript,
   scanWarnings
-}) {
+}: AssembleDocumentOptions): void {
   const css = doc.createElement('style');
   css.textContent = generatePrintStyles({ title, exportDate, opts });
   doc.head.appendChild(css);
@@ -73,7 +84,7 @@ export function assembleDocument({
   if (omittedProgress) console.info(`ChatGPT PDF: skipped ${omittedProgress} transient progress updates.`);
 }
 
-export function openPrintWindow(doc) {
+export function openPrintWindow(doc: Document): void {
   const file = new Blob(['<!doctype html>\n' + doc.documentElement.outerHTML], {
     type: 'text/html;charset=utf-8'
   });
@@ -85,12 +96,12 @@ export function openPrintWindow(doc) {
   }
   printWindow.addEventListener('load', async () => {
     try {
-      await printWindow.document.fonts?.ready;
+      await (printWindow.document as unknown as { fonts?: { ready: Promise<void> } }).fonts?.ready;
       await Promise.race([
-        Promise.all([...printWindow.document.images].map((img) => img.complete ?
-          Promise.resolve() : new Promise((resolve) => {
-            img.addEventListener('load', resolve, { once: true });
-            img.addEventListener('error', resolve, { once: true });
+        Promise.all(Array.from(printWindow.document.images).map((img) => img.complete ?
+          Promise.resolve() : new Promise<void>((resolve) => {
+            img.addEventListener('load', () => resolve(), { once: true });
+            img.addEventListener('error', () => resolve(), { once: true });
           }))),
         sleep(4000)
       ]);

@@ -1,5 +1,23 @@
 import { sleep, afterPaint } from '../utils.js';
 
+export interface ScannerScanStats {
+  steps: number;
+  slowSteps: number;
+  topReached: boolean;
+  bottomReached: boolean;
+  [key: string]: unknown;
+}
+
+export interface ConversationScannerOptions {
+  scrollHost: HTMLElement;
+  scanStats: ScannerScanStats;
+  checkCancelled: () => void;
+  showProgress: (label: string, fraction: number, description?: string) => void;
+  scanSummary: () => string;
+  collectVisibleMessages: () => Promise<void>;
+  pendingVisuals?: Set<string>;
+}
+
 export function createConversationScanner({
   scrollHost,
   scanStats,
@@ -8,19 +26,19 @@ export function createConversationScanner({
   scanSummary,
   collectVisibleMessages,
   pendingVisuals
-}) {
+}: ConversationScannerOptions) {
   function viewportSignature() {
     const hostRect = scrollHost.getBoundingClientRect();
-    const visible = [];
+    const visible: string[] = [];
     let pendingImages = 0;
-    for (const turn of scrollHost.querySelectorAll('[data-turn-key]')) {
+    for (const turn of Array.from(scrollHost.querySelectorAll('[data-turn-key]'))) {
       const r = turn.getBoundingClientRect();
       if (r.bottom < hostRect.top - 2 || r.top > hostRect.bottom + 2) continue;
       const key = turn.getAttribute('data-turn-key') || '';
       const turnText = turn.textContent || '';
       const textLength = turnText.length;
       let images = 0;
-      for (const img of turn.querySelectorAll('img')) {
+      for (const img of Array.from(turn.querySelectorAll('img'))) {
         images++;
         if (!img.complete) pendingImages++;
       }
@@ -32,11 +50,12 @@ export function createConversationScanner({
     };
   }
 
-  async function waitForSettled({ minimum = 450, maximum = 3000 } = {}) {
+  async function waitForSettled({ minimum = 450, maximum = 3000 } = {}): Promise<boolean> {
     // Dynamic content, lazy images, and virtualized turns can settle later than
     // an arbitrary 120 ms timer. Require multiple unchanged samples.
     const began = performance.now();
-    let previous = '', quiet = 0;
+    let previous = '';
+    let quiet = 0;
     while (performance.now() - began < maximum) {
       checkCancelled();
       await sleep(145);
@@ -57,11 +76,11 @@ export function createConversationScanner({
     return false;
   }
 
-  async function scan() {
+  async function scan(): Promise<string[]> {
     // Deliberately overlap scan windows to avoid skipping short virtualized
     // turns. Stabilize DOM content BEFORE copying each newly visible window.
     const originalTop = scrollHost.scrollTop;
-    const scanWarnings = [];
+    const scanWarnings: string[] = [];
     try {
       showProgress('Moving to the start of the conversation', 0, scanSummary());
       for (let retry = 0; retry < 6; retry++) {

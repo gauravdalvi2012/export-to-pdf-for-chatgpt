@@ -1,7 +1,14 @@
 import { quotedCSS } from '../utils.js';
 import { palette } from '../config.js';
+import type { ExportSettings } from '../types.js';
 
-export function generatePrintStyles({ title, exportDate, opts }) {
+export interface PrintStylesOptions {
+  title: string;
+  exportDate: string;
+  opts: ExportSettings;
+}
+
+export function generatePrintStyles({ title, exportDate, opts }: PrintStylesOptions): string {
   const pal = palette[opts.theme];
   const pageHeader = opts.titleAndDate ? `
     @top-left { content: ${quotedCSS(title)}; font: 8pt Arial, sans-serif; color: ${pal.muted}; }

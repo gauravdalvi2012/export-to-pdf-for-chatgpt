@@ -1,28 +1,35 @@
 /* Export to PDF for ChatGPT — preserve code lines and remove source citations. */
 import { defaults } from './config.js';
-import { createProgressIndicator } from './ui/progress.js';
+import { createProgressIndicator, type ProgressIndicator } from './ui/progress.js';
 import { createSnapshotManager } from './capture/snapshot.js';
 import { createDomCleaner } from './dom/cleaner.js';
 import { extractAttachments, hasContent } from './dom/attachments.js';
-import { createConversationScanner } from './scanner/scroller.js';
+import { createConversationScanner, type ScannerScanStats } from './scanner/scroller.js';
 import { assembleDocument, openPrintWindow } from './print/document.js';
+import type { ExportSettings, ConversationRole } from './types.js';
+
+declare global {
+  interface Window {
+    __chatPdfExportRunning?: boolean;
+  }
+}
 
 (async () => {
   if (window.__chatPdfExportRunning) return;
   window.__chatPdfExportRunning = true;
-  let progress = null;
+  let progress: ProgressIndicator | null = null;
 
   try {
-    const scrollHost = document.querySelector('[role="region"][aria-label="Conversation"]');
+    const scrollHost = document.querySelector('[role="region"][aria-label="Conversation"]') as HTMLElement;
     if (!scrollHost) throw new Error('Conversation not found. Open a ChatGPT conversation first.');
 
-    let saved = {};
+    let saved: Partial<ExportSettings> = {};
     try {
-      saved = (await chrome.storage.sync.get('pdfExportSettings')).pdfExportSettings || {};
+      saved = ((await chrome.storage.sync.get('pdfExportSettings')) as { pdfExportSettings?: Partial<ExportSettings> }).pdfExportSettings || {};
     } catch (error) {
       console.warn('Using default PDF export settings:', error);
     }
-    const opts = { ...defaults, ...saved };
+    const opts: ExportSettings = { ...defaults, ...saved };
     if (!['light', 'dark', 'black'].includes(opts.theme)) opts.theme = 'light';
     if (!['A4', 'Letter'].includes(opts.paper)) opts.paper = 'A4';
 
@@ -31,8 +38,13 @@ import { assembleDocument, openPrintWindow } from './print/document.js';
     progress = createProgressIndicator();
     const { progressHost, showProgress, checkCancelled } = progress;
 
-    const scanStats = {
-      seenTurns: new Set(),
+    const scanStats: ScannerScanStats & {
+      seenTurns: Set<string>;
+      visualCandidates: number;
+      visualSnapshots: number;
+      visualFallbacks: number;
+    } = {
+      seenTurns: new Set<string>(),
       visualCandidates: 0,
       visualSnapshots: 0,
       visualFallbacks: 0,
@@ -49,53 +61,57 @@ import { assembleDocument, openPrintWindow } from './print/document.js';
     const exportDate = exportedAt.toLocaleDateString(undefined, {
       year: 'numeric', month: 'short', day: 'numeric'
     });
-    const collected = new Map();
+    const collected = new Map<string, HTMLElement>();
     const doc = document.implementation.createHTMLDocument(title);
 
     // We cannot know the total number of conversation turns from the DOM alone:
     // virtualized turns may not yet exist. Never label scan position as completeness.
-    function scanSummary() {
+    function scanSummary(): string {
       const attachments = [...collected.values()].reduce((sum, section) =>
         sum + section.querySelectorAll('.attachment-pill').length, 0);
       return `${scanStats.seenTurns.size} turns detected · ${collected.size} messages · ${attachments} attachment pills`;
     }
 
-    let scanner = null;
+    let scanner: ReturnType<typeof createConversationScanner> | null = null;
     const snapshotManager = createSnapshotManager({
       scrollHost,
       getProgressHost: () => progressHost,
       checkCancelled,
-      waitForSettled: (args) => scanner.waitForSettled(args),
+      waitForSettled: (args) => (scanner ? scanner.waitForSettled(args) : Promise.resolve(false)),
       scanStats
     });
 
-    const userAttachmentNodes = new WeakSet();
+    const userAttachmentNodes = new Set<Element>();
     const clean = createDomCleaner({
       doc,
-      snapshotCache: snapshotManager.snapshotCache,
+      snapshotCache: {
+        get: (element: Element) => snapshotManager.snapshotCache.get(element),
+        has: (element: Element) => snapshotManager.snapshotCache.has(element)
+      },
       userAttachmentNodes
     });
 
-    async function collectVisibleMessages() {
+    async function collectVisibleMessages(): Promise<void> {
       // This is the actual ChatGPT turn boundary on the currently observed UI.
       // A single turn can contain BOTH a user message and an assistant response.
-      for (const turn of scrollHost.querySelectorAll('[data-turn-key]')) {
+      for (const turn of Array.from(scrollHost.querySelectorAll('[data-turn-key]'))) {
         const key = turn.getAttribute('data-turn-key');
         if (!key) continue;
         scanStats.seenTurns.add(key);
         const user = turn.querySelector('[data-chatgpt-search-message-ids], .group\\/user-message');
         const userSource = user?.querySelector('.bg-user-message') || user?.querySelector('[dir="auto"]') || user;
-        const candidates = [...turn.querySelectorAll(
+        const candidates = Array.from(turn.querySelectorAll(
           '[class*="entity-prose-inset"], .markdown, [class*="markdown"]'
-        )].filter((element) => !user?.contains(element));
+        )).filter((element) => !user?.contains(element));
         const assistantSources = candidates.filter((element) =>
           !candidates.some((other) => other !== element && other.contains(element))
         );
 
-        async function add(role, source, suffix) {
-          const attachments = role === 'user'
+        async function add(role: ConversationRole, source: Element | null, suffix: string): Promise<void> {
+          const attachments = role === 'user' && source
             ? extractAttachments(doc, turn, user, source, assistantSources, userAttachmentNodes) : null;
           if (!hasContent(source) && !attachments?.childNodes.length) return;
+          if (!source) return;
           const section = doc.createElement('section');
           section.className = `message ${role}`;
           const roleLabel = doc.createElement('div');
@@ -110,7 +126,7 @@ import { assembleDocument, openPrintWindow } from './print/document.js';
           section.appendChild(body);
           // Only genuinely short messages stay intact. Do not treat longer
           // paragraphs or multiline configuration as unbreakable sections.
-          const compactText = (source.innerText || '').trim();
+          const compactText = ((source as HTMLElement).innerText || source.textContent || '').trim();
           if (compactText.length < 230 && compactText.split(/\r?\n/).length <= 5 &&
               !source.querySelector('table, pre, img, svg, figure')) {
             section.classList.add('short-message');
@@ -118,9 +134,11 @@ import { assembleDocument, openPrintWindow } from './print/document.js';
           }
           const id = `${key}:${suffix}`;
           const old = collected.get(id);
-          if (!old || section.textContent.length > old.textContent.length ||
-              section.querySelectorAll('img,.attachment-pill').length >
-              old.querySelectorAll('img,.attachment-pill').length) {
+          const oldTextLen = old?.textContent?.length || 0;
+          const newTextLen = section.textContent?.length || 0;
+          const oldMediaCount = old ? old.querySelectorAll('img,.attachment-pill').length : 0;
+          const newMediaCount = section.querySelectorAll('img,.attachment-pill').length;
+          if (!old || newTextLen > oldTextLen || newMediaCount > oldMediaCount) {
             collected.set(id, section);
           }
         }
@@ -171,8 +189,9 @@ import { assembleDocument, openPrintWindow } from './print/document.js';
       `${snapshotManager.pendingVisuals.size} unresolved static snapshots.`);
 
     openPrintWindow(doc);
-  } catch (error) {
-    alert('ChatGPT PDF export: ' + error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    alert('ChatGPT PDF export: ' + message);
     console.error('ChatGPT PDF export failed:', error);
   } finally {
     progress?.remove();

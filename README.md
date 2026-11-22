@@ -58,12 +58,14 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 
 ## 🛠️ Development & Build Scripts
 
-The codebase is organized into modular ES modules under `src/` and bundled with `esbuild`.
+The codebase is written in TypeScript, organized into modular domain modules under `src/`, bundled with `esbuild`, and tested with `vitest`.
 
 | Command | Description |
 | :--- | :--- |
-| `npm run build` | Compiles `src/index.js` into the root `export.js` bundle. |
+| `npm run build` | Compiles `src/index.ts` into the root `export.js` bundle using esbuild. |
 | `npm run watch` | Watches `src/` for file changes and rebuilds automatically. |
+| `npm run typecheck` | Runs strict TypeScript verification across `src/` and `test/` without emitting. |
+| `npm test` | Runs the full Vitest automated test suite against simulated ChatGPT DOM fixtures. |
 | `npm run package` | Builds the project, prepares a clean `dist/` directory, and generates `dist/export-to-pdf-for-chatgpt.zip` for the Chrome Web Store. |
 
 ---
@@ -78,25 +80,34 @@ The codebase is organized into modular ES modules under `src/` and bundled with 
 ├── icons/                 # Extension icons (16px, 32px, 48px, 128px)
 ├── scripts/
 │   └── package.js         # Automated distribution and zip packaging script
-└── src/
-    ├── index.js           # Main export orchestrator and lifecycle coordinator
-    ├── config.js          # Defaults, palettes, tag/attribute sets, regex patterns
-    ├── utils.js           # DOM helpers, safe URL validators, CSS helpers
-    ├── ui/
-    │   └── progress.js    # Shadow DOM progress overlay with cancellation
-    ├── scanner/
-    │   └── scroller.js    # Adaptive scrolling, DOM settling & boundary checks
-    ├── capture/
-    │   └── snapshot.js    # Widget detection & bounding box screenshot cropper
-    ├── dom/
-    │   ├── cleaner.js     # DOM sanitizer and structure normalizer
-    │   ├── code.js        # Code line boundary and indentation preservation
-    │   ├── citations.js   # Citation pill and popover badge detection
-    │   ├── attachments.js # File upload cards and attachment badge parser
-    │   └── visual.js      # Layout grids, color blocks & table head normalizer
-    └── print/
-        ├── styles.js      # Print media CSS, @page rules & pagination controls
-        └── document.js    # Document assembly, progress filtering & print trigger
+├── src/
+│   ├── index.ts           # Main export orchestrator and lifecycle coordinator
+│   ├── types.ts           # TypeScript interfaces for settings, turns, and snapshots
+│   ├── config.ts          # Defaults, palettes, tag/attribute sets, regex patterns
+│   ├── utils.ts           # DOM helpers, safe URL validators, CSS helpers
+│   ├── ui/
+│   │   └── progress.ts    # Shadow DOM progress overlay with cancellation
+│   ├── scanner/
+│   │   └── scroller.ts    # Adaptive scrolling, DOM settling & boundary checks
+│   ├── capture/
+│   │   └── snapshot.ts    # Widget detection & bounding box screenshot cropper
+│   ├── dom/
+│   │   ├── cleaner.ts     # DOM sanitizer and structure normalizer
+│   │   ├── code.ts        # Code line boundary and indentation preservation
+│   │   ├── citations.ts   # Citation pill and popover badge detection
+│   │   ├── attachments.ts # File upload cards and attachment badge parser
+│   │   └── visual.ts      # Layout grids, color blocks & table head normalizer
+│   └── print/
+│       ├── styles.ts      # Print media CSS, @page rules & pagination controls
+│       └── document.ts    # Document assembly, progress filtering & print trigger
+└── test/
+    ├── config.test.ts     # Configuration and palette schema tests
+    ├── utils.test.ts      # URL sanitizer and CSS string escape tests
+    └── dom/
+        ├── cleaner.test.ts      # DOM sanitization and table normalization tests
+        ├── code.test.ts         # Indentation and line boundary preservation tests
+        ├── citations.test.ts    # Citation pill stripping without breaking real links
+        └── attachments.test.ts  # Attachment card and uploaded image badge tests
 ```
 
 ---
